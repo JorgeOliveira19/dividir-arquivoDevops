@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisor de CSV</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Divisor de Arquivo CSV</h1>
+        <form id="csvForm" enctype="multipart/form-data" class="mt-4">
+            <div class="form-group">
+                <label for="file">Selecione o arquivo CSV:</label>
+                <input type="file" name="file" id="file" class="form-control" required>
+                <small id="fileError" class="text-danger" style="display:none;">Por favor, selecione um arquivo CSV.</small>
+            </div>
+            <div class="form-group">
+                <label for="tamanho_lote">Tamanho do lote (número de linhas por arquivo):</label>
+                <input type="number" name="tamanho_lote" id="tamanho_lote" class="form-control" required>
+                <small id="loteError" class="text-danger" style="display:none;">O valor deve ser um número positivo.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Dividir CSV</button>
+        </form>
+        <div id="downloadLinks" class="mt-4" style="display:none;">
+            <h3>Arquivos gerados:</h3>
+            <ul id="fileList"></ul>
+        </div>
+        <div id="successMessage" class="alert alert-info mt-3" style="display:none;"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('csvForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio do formulário padrão
+
+            var fileInput = document.getElementById('file');
+            var file = fileInput.files[0];
+            var loteInput = document.getElementById('tamanho_lote');
+            var lote = parseInt(loteInput.value);
+
+            if (!file || file.type !== 'text/csv') {
+                document.getElementById('fileError').style.display = 'block';
+                return;
+            }
+            if (isNaN(lote) || lote <= 0) {
+                document.getElementById('loteError').style.display = 'block';
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('tamanho_lote', lote);
+
+            fetch('/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Exibe os links para download
+                var downloadLinks = document.getElementById('downloadLinks');
+                var fileList = document.getElementById('fileList');
+                fileList.innerHTML = '';
+                data.forEach(function(link) {
+                    var listItem = document.createElement('li');
+                    var anchor = document.createElement('a');
+                    anchor.href = link;
+                    anchor.textContent = link.split('/').pop();
+                    listItem.appendChild(anchor);
+                    fileList.appendChild(listItem);
+                });
+                downloadLinks.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+            });
+        });
+    </script>
+</body>
+</html>
