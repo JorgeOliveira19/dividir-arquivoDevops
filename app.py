@@ -10,22 +10,27 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Função para dividir o CSV
 def dividir_csv(input_file, tamanho_lote):
-    # Lê o arquivo CSV
-    df = pd.read_csv(input_file, delimiter=';')
-    num_partes = len(df) // tamanho_lote + (1 if len(df) % tamanho_lote != 0 else 0)
+    try:
+        # Lê o arquivo CSV
+        df = pd.read_csv(input_file, delimiter=';')
+        num_partes = len(df) // tamanho_lote + (1 if len(df) % tamanho_lote != 0 else 0)
 
-    arquivos_gerados = []
+        arquivos_gerados = []
 
-    # Dividir o arquivo CSV em partes
-    for i in range(num_partes):
-        inicio = i * tamanho_lote
-        fim = min((i + 1) * tamanho_lote, len(df))
-        df_part = df.iloc[inicio:fim].reset_index(drop=True)
-        output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'Arquivo: {i + 1}.csv')
-        df_part.to_csv(output_file, sep=';', index=False)
-        arquivos_gerados.append(f'Arquivo: {i + 1}.csv')
+        # Dividir o arquivo CSV em partes
+        for i in range(num_partes):
+            inicio = i * tamanho_lote
+            fim = min((i + 1) * tamanho_lote, len(df))
+            df_part = df.iloc[inicio:fim].reset_index(drop=True)
+            output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'Arquivo: {i + 1}.csv')
+            df_part.to_csv(output_file, sep=';', index=False)
+            arquivos_gerados.append(f'Arquivo: {i + 1}.csv')
 
-    return arquivos_gerados
+        return arquivos_gerados
+    except Exception as e:
+        print(f"Erro ao dividir o CSV: {e}")
+        raise
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -38,6 +43,7 @@ def home():
         # Salva o arquivo CSV na pasta 'uploads'
         input_file = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(input_file)
+        print(f"Arquivo salvo como: {input_file}")
 
         # Obtém o tamanho do lote
         tamanho_lote = int(request.form['tamanho_lote'])
