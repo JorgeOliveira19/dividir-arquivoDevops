@@ -8,17 +8,6 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Função para limpar a pasta 'uploads'
-
-# def limpar_uploads():
- #   for filename in os.listdir(app.config['UPLOAD_FOLDER']):
-  #      file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-   #     try:
-    #        if os.path.isfile(file_path):
-     #           os.remove(file_path)
-      #  except Exception as e:
-       #     print(f'Erro ao deletar o arquivo {file_path}: {e}')  
-
 # Função para dividir o CSV
 def dividir_csv(input_file, tamanho_lote):
     # Lê o arquivo CSV
@@ -62,8 +51,6 @@ def home():
         # Retorna os links para download
         return jsonify(links_download)
 
-    # Chama a função para limpar a pasta 'uploads' antes de carregar a página
-    ##limpar_uploads()
     return render_template('index.html')
 
 # Rota para o favicon
@@ -76,6 +63,8 @@ def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == '__main__':
+    # Certifica-se de que a pasta 'uploads' é criada ao iniciar a aplicação
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
+        print(f"Pasta '{app.config['UPLOAD_FOLDER']}' criada.")
     app.run(debug=True)
