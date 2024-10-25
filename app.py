@@ -31,9 +31,9 @@ def dividir_csv(input_file, tamanho_lote):
         inicio = i * tamanho_lote
         fim = min((i + 1) * tamanho_lote, len(df))
         df_part = df.iloc[inicio:fim].reset_index(drop=True)
-        output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'arquivo_teste_parte_{i + 1}.csv')
+        output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'Arquivo: {i + 1}.csv')
         df_part.to_csv(output_file, sep=';', index=False)
-        arquivos_gerados.append(f'arquivo_teste_parte_{i + 1}.csv')
+        arquivos_gerados.append(f'Arquivo: {i + 1}.csv')
 
     return arquivos_gerados
 
@@ -64,6 +64,11 @@ def home():
     # Chama a função para limpar a pasta 'uploads' antes de carregar a página
     limpar_uploads()
     return render_template('index.html')
+
+# Rota para o favicon
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
 
 @app.route('/download/<filename>')
 def download_file(filename):
