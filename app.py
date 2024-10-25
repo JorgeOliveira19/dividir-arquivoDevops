@@ -4,6 +4,45 @@ import pandas as pd
 
 app = Flask(__name__)
 
+# Caminho do arquivo para armazenar o contador
+contador_arquivo = 'contador.txt'
+
+# Função para ler o contador do arquivo
+def ler_contador():
+    if not os.path.exists(contador_arquivo):
+        return 0  # Inicia o contador em 0 se o arquivo não existir
+    with open(contador_arquivo, 'r') as f:
+        return int(f.read())
+
+# Função para escrever o contador no arquivo
+def atualizar_contador(valor):
+    with open(contador_arquivo, 'w') as f:
+        f.write(str(valor))
+
+# Carrega o contador do arquivo ao iniciar a aplicação
+contador_uso = ler_contador()
+
+## ---------------------------------------------------------------------------
+
+# Caminho do arquivo para armazenar o contador
+contador_arquivo2 = 'qtdArquivosGerados.txt'
+
+# Função para ler o contador do arquivo
+def ler_contador2():
+    if not os.path.exists(contador_arquivo2):
+        return 0  # Inicia o contador em 0 se o arquivo não existir
+    with open(contador_arquivo2, 'r') as f:
+        return int(f.read())
+
+# Função para escrever o contador no arquivo
+def atualizar_contador2(valor):
+    with open(contador_arquivo2, 'w') as f:
+        f.write(str(valor))
+
+# Carrega o contador do arquivo ao iniciar a aplicação
+contador_uso2 = ler_contador2()
+## ---------------------------------------------------------------------------
+
 # Pasta onde os arquivos CSV divididos serão armazenados
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -31,6 +70,10 @@ def dividir_csv(input_file, tamanho_lote):
         print(f"Erro ao dividir o CSV: {e}")
         raise
 
+# Rota para o favicon
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -54,15 +97,26 @@ def home():
         # Gera links para download dos arquivos gerados
         links_download = [f"/download/{arquivo}" for arquivo in arquivos_gerados]
 
+        global contador_uso
+    if request.method == 'POST':
+        # Incrementa o contador e atualiza o arquivo
+        contador_uso += 1
+        atualizar_contador(contador_uso)
+
+        global contador_uso2
+    if request.method == 'POST':
+        # Incrementa o contador e atualiza o arquivo
+        contador_uso2 += 1
+        atualizar_contador2(contador_uso2)
+
+        # Outras operações, como manipulação do arquivo CSV...
+
         # Retorna os links para download
         return jsonify(links_download)
 
-    return render_template('index.html')
+    return render_template('index.html', contador=contador_uso, contador2=contador_uso2)
 
-# Rota para o favicon
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory('static', 'favicon.ico')
+
 
 @app.route('/download/<filename>')
 def download_file(filename):
