@@ -10,13 +10,13 @@ footer{
     height: 100px;
     bottom: 0;
     left: 0;
-    background-color: blue;
+    background-color: #4d3e7e;
     color: white;
     
 }
 
 body{
-    background-color: rgba(25, 166, 232, 0.955);
+    background-color: #f89e1c;
     margin: 0;
     padding: 0;
     height: 100%;
