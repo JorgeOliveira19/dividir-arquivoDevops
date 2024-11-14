@@ -28,8 +28,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.4.3
+    - name: Run tests with pytest
+      run: pytest > pytest-report.txt
+    # Upload pytest report as an artifact
+    - name: Upload pytest report
+      uses: actions/upload-artifact@v3
       with:
-        name: Package
-        path: staging
+        name: pytest-report
+        path: pytest-report.txt
