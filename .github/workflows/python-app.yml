@@ -33,13 +33,9 @@ jobs:
       run: |
           pytest > pytest-report.txt || true
 
-      # Cria um diretório staging e copia o arquivo de relatório ou outros artifacts
-    - name: Create staging directory and copy report
-      run: mkdir -p staging && cp pytest-report.txt staging
-
-      # Faz o upload do relatório como artifact
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
+    # Publish artifact
+    - name: Create artifact
+      uses: actions/upload-artifact@v3
       with:
-          name: Test-Report
-          path: staging
+        name: python-publish-app-artifact
+        path: ./
