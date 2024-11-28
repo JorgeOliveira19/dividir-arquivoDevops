@@ -48,7 +48,7 @@ jobs:
       uses: actions/download-artifact@v3 #ou @v3 v4.1.8
       with:
         name: python-publish-app-artifact
-        path: /.artifact
+        path: ./artifact
         
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
