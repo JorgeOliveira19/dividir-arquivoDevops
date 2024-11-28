@@ -14,6 +14,7 @@ env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'       # set this to the path to your function app project, defaults to the repository root
   
 permissions:
+  id-token: write
   contents: read
 
 jobs:
