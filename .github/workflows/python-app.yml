@@ -45,7 +45,7 @@ jobs:
     needs: build
     steps:
     - name: Download a Build Artifact
-      uses: actions/download-artifact@v4.1.8 #ou @v3
+      uses: actions/download-artifact@v3 #ou @v3 v4.1.8
       with:
         name: python-publish-app-artifact
         path: /.artifact
