@@ -48,6 +48,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+    - name: Azure login
+      uses: azure/login@v2
+      with:
+        client-id: '28deb0ad-13a4-4cc4-bc84-200e87e44077'       #${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: '6f9e3b1e-1809-444a-81d3-82d40a928812'       #${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: '28deb0ad-13a4-4cc4-bc84-200e87e44077' #${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+          
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3 #ou @v3 v4.1.8
       with:
