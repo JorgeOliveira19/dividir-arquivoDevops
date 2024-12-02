@@ -63,7 +63,7 @@ jobs:
         name: python-publish-app-artifact
         path: ./artifact
         
-    - name: 'Run Azure Functions Action'
+    - name: Run Azure Functions Action
       uses: Azure/functions-action@v1
       id: fa
       with:
