@@ -7,6 +7,10 @@ app = Flask(__name__)
 # Caminho do arquivo para armazenar o contador
 contador_arquivo = 'contador.txt'
 
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
+
+
 # Função para ler o contador do arquivo
 def ler_contador():
     if not os.path.exists(contador_arquivo):
